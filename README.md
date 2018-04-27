@@ -1,4 +1,6 @@
-#PhalApi-PHPExcel基于PhalApi的PHPExcel拓展
+**本版本借助于PhalApi 1.0 的PHPExcel拓展 我只是搬运工稍作修改**
+
+#PhalApi-PHPExcel基于PhalApi 2.0 的PHPExcel拓展
 
 ![](http://webtools.qiniudn.com/master-LOGO-20150410_50.jpg)
 
@@ -20,7 +22,7 @@
 
 和往常一样我们把PHPExcel目录放到Library目录中然后实例化Lite即可
 
-    $PHPExcel = new PHPExcel_Lite();
+    
 
 ##2. 使用
 
