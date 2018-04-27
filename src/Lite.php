@@ -1,7 +1,5 @@
 <?php
-
-namespace ctbsea\phalapiExcel;
-
+namespace ctbsea\phalapiExcel ;
 /**
  * PHPExcel
  * Copyright (c) 2006 - 2013 PHPExcel
@@ -22,19 +20,30 @@ namespace ctbsea\phalapiExcel;
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
  * @version    1.7.9, 2013-06-02
  */
-class Lite extends PHPExcel
-{
 
-    public function __construct()
-    {
-        parent::__construct();
+/** PHPExcel root directory */
+if (!defined('PHPEXCEL_ROOT')) {
+    define('PHPEXCEL_ROOT', dirname(__FILE__) . '/');
+    require(PHPEXCEL_ROOT . 'PHPExcel/Autoloader.php');
+}
+
+class Lite {
+
+    public $PHPExcel;
+
+    public function __construct() {
+
+        $this->PHPExcel = new \PHPExcel();
     }
 
-    public function importExcel($fileName, $firstRowTitle = 1, $Sheet = 0)
-    {
+    public function getPHPExcel() {
 
-        if ($firstRowTitle < 0)
-        {
+        return $this->PHPExcel;
+    }
+
+    public function importExcel($fileName, $firstRowTitle = 1, $Sheet = 0) {
+
+        if ($firstRowTitle < 0) {
             return "firstRowTitle Error";
         }
 
@@ -43,36 +52,29 @@ class Lite extends PHPExcel
         //获取表中的第一个工作表，如果要获取第二个，把0改为1，依次类推
         $currentSheet = $PHPExcel->getSheet($Sheet);
         //获取总列数
-        $allColumn    = $currentSheet->getHighestColumn();
+        $allColumn = $currentSheet->getHighestColumn();
         //获取总行数
-        $allRow       = $currentSheet->getHighestRow();
+        $allRow = $currentSheet->getHighestRow();
         //循环获取表中的数据，$currentRow表示当前行，从哪行开始读取数据，索引值从0开始
-        $title        = array();
-        if ($firstRowTitle)
-        {
-            for ($currentColumn = 'A'; $currentColumn <= $allColumn; $currentColumn++)
-            {
+        $title = array();
+        if ($firstRowTitle) {
+            for ($currentColumn = 'A'; $currentColumn <= $allColumn; $currentColumn++) {
                 //数据坐标
-                $address               = $currentColumn . $firstRowTitle;
+                $address = $currentColumn . $firstRowTitle;
                 //读取到的数据，保存到数组$arr中
                 $title[$currentColumn] = $currentSheet->getCell($address)->getValue();
             }
         }
 
-        for ($currentRow = $firstRowTitle + 1; $currentRow <= $allRow; $currentRow++)
-        {
+        for ($currentRow = $firstRowTitle + 1; $currentRow <= $allRow; $currentRow++) {
             //从哪列开始，A表示第一列
-            for ($currentColumn = 'A'; $currentColumn <= $allColumn; $currentColumn++)
-            {
+            for ($currentColumn = 'A'; $currentColumn <= $allColumn; $currentColumn++) {
                 //数据坐标
                 $address = $currentColumn . $currentRow;
-                if ($title)
-                {
+                if ($title) {
                     //读取到的数据，保存到数组$arr中
                     $arr[$currentRow][$this->getIndex($title, $currentColumn, $currentColumn)] = $currentSheet->getCell($address)->getValue();
-                }
-                else
-                {
+                } else {
                     $arr[$currentRow][$currentColumn] = $currentSheet->getCell($address)->getValue();
                 }
             }
@@ -80,45 +82,40 @@ class Lite extends PHPExcel
         return array_values($arr);
     }
 
-    public function getIndex($arr, $key, $default = '')
-    {
+    public function getIndex($arr, $key, $default = '') {
 
         return isset($arr[$key]) ? $arr[$key] : $default;
     }
 
-    public function exportExcel($fileName, $data, $headArr)
-    {
+    public function exportExcel($fileName, $data, $headArr) {
 
         //对数据进行检验
-        if (empty($data) || !is_array($data))
-        {
+        if (empty($data) || !is_array($data)) {
             die("data must be a array");
         }
         //检查文件名
-        if (empty($fileName))
-        {
+        if (empty($fileName)) {
             exit;
         }
 
+        $objPHPExcel = $this->PHPExcel;
+
         //设置表头
         $key = ord("A");
-        foreach ($headArr as $v)
-        {
+        foreach ($headArr as $v) {
             $colum = chr($key);
-            $this->setActiveSheetIndex(0)->setCellValue($colum . '1', $v);
-            $key   += 1;
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($colum . '1', $v);
+            $key += 1;
         }
 
         $column      = 2;
-        $objActSheet = $this->getActiveSheet();
-        foreach ($data as $key => $rows)
-        { //行写入
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        foreach ($data as $key => $rows) { //行写入
             $span = ord("A");
-            foreach ($rows as $keyName => $value)
-            {// 列写入
+            foreach ($rows as $keyName => $value) {// 列写入
                 $j = chr($span);
                 $objActSheet->setCellValue($j . $column, $value);
-                $objActSheet->getColumnDimension($j)->setAutoSize(true);
+				$objActSheet->getColumnDimension($j)->setAutoSize(true);
                 $span++;
             }
             $column++;
@@ -126,27 +123,24 @@ class Lite extends PHPExcel
 
         $fileName = iconv("utf-8", "gb2312", $fileName);
         //设置活动单指数到第一个表,所以Excel打开这是第一个表
-        $this->setActiveSheetIndex(0);
+        $objPHPExcel->setActiveSheetIndex(0);
         header('Content-Type: application/vnd.ms-excel');
         header("Content-Disposition: attachment;filename=\"$fileName\"");
         header('Cache-Control: max-age=0');
 
-        $objWriter = \PHPExcel_IOFactory::createWriter($this, \PHPExcel_Lite::getExcelType($fileName));
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, self::getExcelType($fileName));
         $objWriter->save('php://output'); //文件通过浏览器下载
         exit;
     }
 
-    public static function getExcelType($pFilename)
-    {
+    public static function getExcelType($pFilename) {
 
         // First, lucky guess by inspecting file extension
         $pathinfo = pathinfo($pFilename);
 
         $extensionType = NULL;
-        if (isset($pathinfo['extension']))
-        {
-            switch (strtolower($pathinfo['extension']))
-            {
+        if (isset($pathinfo['extension'])) {
+            switch (strtolower($pathinfo['extension'])) {
                 case 'xlsx':            //	Excel (OfficeOpenXML) Spreadsheet
                 case 'xlsm':            //	Excel (OfficeOpenXML) Macro Spreadsheet (macros will be discarded)
                 case 'xltx':            //	Excel (OfficeOpenXML) Template
@@ -185,5 +179,4 @@ class Lite extends PHPExcel
             return $extensionType;
         }
     }
-
 }
