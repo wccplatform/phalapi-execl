@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ctbsea\\phalapiExcel\\": "src"
+            "wccplatform\\phalapiExcel\\": "src"
         }
     }
 
