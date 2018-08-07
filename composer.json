@@ -1,5 +1,5 @@
 {
-    "name": "ctbsea/phalapi-excel",
+    "name": "wccplatform/phalapi-excel",
     "description": "PHP execl处理，专门用于PhalApi 2.x 开源接口框架。",
     "keywords": ["excel", "phalapi"],
     "version": "dev-master",
