@@ -33,7 +33,7 @@
 
 ##3. 使用
 
-PhalApi-PHPExcel提供两个基础封装好的方法分别是exportExcel,importExcel分表接触导出和接受的问题
+PhalApi-PHPExcel提供三个基础封装好的方法分别是exportExcel,exportExcelNew,importExcel分表接触导出和接受的问题
 
 exportExcel接受三个参数,$data基础数据,$headArr标题,$filename文件名称下面是一个例子
 
@@ -49,6 +49,22 @@ exportExcel接受三个参数,$data基础数据,$headArr标题,$filename文件�
         \PhalApi\DI()->execl->exportExcel($filename, $data, $headArr);
         
 PhalApi-PHPExcel可根据导出的文件后缀来导出不同格式的Excel文档
+
+exportExcelNew接受三个参数,$data基础数据,$headArr标题,$filename文件名称下面是一个例子
+
+       $data=array(
+            array('username'=>'zhangsan','password'=>"123456"),
+            array('username'=>'lisi','password'=>"abcdefg"),
+            array('username'=>'wangwu','password'=>"111111"),
+        );
+
+        $filename    = "test_excel.xlsx";
+        $headArr     = array('username'=>'用户名', 'password'=>'密码');
+        
+        \PhalApi\DI()->execl->exportExcel($filename, $data, $headArr);
+        
+exportExcelNew是exportExcel的优化，两者唯一的不同就是$headArr的参数，exportExcelNew可以根据headArr来写入与表头对应的数值，$data的key顺序可以随意。
+
 
 importExcel接受三个参数,$filename文件名称,$firstRowTitle标题(可选默认从第一行作为标题),$Sheet工作表(默认第一张工作表)
 
