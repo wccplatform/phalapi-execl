@@ -106,9 +106,9 @@ class Lite {
         $objPHPExcel = $this->PHPExcel;
 
         //设置表头
-        $key = ord("A");
+        $key = 0;
         foreach ($headArr as $v) {
-            $colum = chr($key);
+            $colum = \PHPExcel_Cell::stringFromColumnIndex($key);
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue($colum . '1', $v);
             $key += 1;
         }
@@ -116,9 +116,9 @@ class Lite {
         $column      = 2;
         $objActSheet = $objPHPExcel->getActiveSheet();
         foreach ($data as $key => $rows) { //行写入
-            $span = ord("A");
+            $span = 0;
             foreach ($rows as $keyName => $value) {// 列写入
-                $j = chr($span);
+                $j = \PHPExcel_Cell::stringFromColumnIndex($span);
                 $objActSheet->setCellValue($j . $column, $value);
 				$objActSheet->getColumnDimension($j)->setAutoSize(true);
                 $span++;
@@ -162,9 +162,9 @@ class Lite {
         $objPHPExcel = $this->PHPExcel;
 
         //设置表头
-        $key = ord("A");
+        $key = 0;
         foreach ($headArr as $v) {
-            $colum = chr($key);
+            $colum = \PHPExcel_Cell::stringFromColumnIndex($key);
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue($colum . '1', $v);
             $key += 1;
         }
@@ -172,9 +172,9 @@ class Lite {
         $column      = 2;
         $objActSheet = $objPHPExcel->getActiveSheet();
         foreach ($data as $key => $rows) { //行写入
-            $span = ord("A");
+            $span = 0;
             foreach ($headArr as $keyName => $value) {// 列写入
-                $j = chr($span);
+                $j = \PHPExcel_Cell::stringFromColumnIndex($span);
                 $objActSheet->setCellValue($j . $column, $rows[$keyName]);
                 $objActSheet->getColumnDimension($j)->setAutoSize(true);
                 $span++;
