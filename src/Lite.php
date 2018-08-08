@@ -41,6 +41,11 @@ class Lite {
         return $this->PHPExcel;
     }
 
+    public function load($fileName)
+    {
+        return \PHPExcel_IOFactory::load($fileName);
+    }
+
     public function importExcel($fileName, $firstRowTitle = 1, $Sheet = 0) {
 
         if ($firstRowTitle < 0) {
@@ -132,6 +137,63 @@ class Lite {
         $objWriter->save('php://output'); //文件通过浏览器下载
         exit;
     }
+
+    /**
+     * 导出execl(改造原来的方法）
+     * @param $fileName
+     * @param $data
+     * @param $headArr array value为表头名，key为表头对应的字段名
+     * @throws PHPExcel_Exception
+     * @throws PHPExcel_Reader_Exception
+     * @throws PHPExcel_Writer_Exception
+     */
+    public function exportExcelNew($fileName, $data, $headArr)
+    {
+
+        //对数据进行检验
+        if (empty($data) || !is_array($data)) {
+            throw new \PhalApi\Exception\BadRequestException('暂无数据', '1');
+        }
+        //检查文件名
+        if (empty($fileName)) {
+            exit;
+        }
+
+        $objPHPExcel = $this->PHPExcel;
+
+        //设置表头
+        $key = ord("A");
+        foreach ($headArr as $v) {
+            $colum = chr($key);
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValue($colum . '1', $v);
+            $key += 1;
+        }
+
+        $column      = 2;
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        foreach ($data as $key => $rows) { //行写入
+            $span = ord("A");
+            foreach ($headArr as $keyName => $value) {// 列写入
+                $j = chr($span);
+                $objActSheet->setCellValue($j . $column, $rows[$keyName]);
+                $objActSheet->getColumnDimension($j)->setAutoSize(true);
+                $span++;
+            }
+            $column++;
+        }
+
+        $fileName = iconv("utf-8", "gb2312", $fileName);
+        //设置活动单指数到第一个表,所以Excel打开这是第一个表
+        $objPHPExcel->setActiveSheetIndex(0);
+        header('Content-Type: application/vnd.ms-excel');
+        header("Content-Disposition: attachment;filename=\"$fileName\"");
+        header('Cache-Control: max-age=0');
+
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, PHPExcel_Lite::getExcelType($fileName));
+        $objWriter->save('php://output'); //文件通过浏览器下载
+        exit;
+    }
+
 
     public static function getExcelType($pFilename) {
 
