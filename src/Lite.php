@@ -96,7 +96,7 @@ class Lite {
 
         //对数据进行检验
         if (empty($data) || !is_array($data)) {
-            die("data must be a array");
+            throw new \PhalApi\Exception\BadRequestException('暂无数据', '1');
         }
         //检查文件名
         if (empty($fileName)) {
@@ -189,7 +189,7 @@ class Lite {
         header("Content-Disposition: attachment;filename=\"$fileName\"");
         header('Cache-Control: max-age=0');
 
-        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, PHPExcel_Lite::getExcelType($fileName));
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, self::getExcelType($fileName));
         $objWriter->save('php://output'); //文件通过浏览器下载
         exit;
     }
