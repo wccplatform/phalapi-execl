@@ -175,7 +175,7 @@ class Lite {
             $span = 0;
             foreach ($headArr as $keyName => $value) {// 列写入
                 $j = \PHPExcel_Cell::stringFromColumnIndex($span);
-                $objActSheet->setCellValue($j . $column, $rows[$keyName]);
+                $objActSheet->setCellValue($j . $column, ' '.$rows[$keyName]);
                 $objActSheet->getColumnDimension($j)->setAutoSize(true);
                 $span++;
             }
