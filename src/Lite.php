@@ -119,7 +119,7 @@ class Lite {
             $span = 0;
             foreach ($rows as $keyName => $value) {// 列写入
                 $j = \PHPExcel_Cell::stringFromColumnIndex($span);
-                $objActSheet->setCellValue($j . $column, $value);
+                $objActSheet->setCellValueExplicit($j . $column, $value, \PHPExcel_Cell_DataType::TYPE_STRING);
 				$objActSheet->getColumnDimension($j)->setAutoSize(true);
                 $span++;
             }
@@ -175,7 +175,7 @@ class Lite {
             $span = 0;
             foreach ($headArr as $keyName => $value) {// 列写入
                 $j = \PHPExcel_Cell::stringFromColumnIndex($span);
-                $objActSheet->setCellValue($j . $column, ' '.$rows[$keyName]);
+                $objActSheet->setCellValueExplicit($j . $column, $rows[$keyName],\PHPExcel_Cell_DataType::TYPE_STRING);
                 $objActSheet->getColumnDimension($j)->setAutoSize(true);
                 $span++;
             }
